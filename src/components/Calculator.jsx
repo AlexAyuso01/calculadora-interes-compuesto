@@ -14,55 +14,57 @@ const Calculator = () => {
   const [result, setResult] = useState(null);
   const [chartData, setChartData] = useState([]);
 
+  // helper para inputs numéricos (convierte a Number y tolera campo vacío)
+  const handleNumber = (setter) => (e) => {
+    const v = e.target.value;
+    const n = v === '' ? 0 : Number(v);
+    setter(Number.isNaN(n) ? 0 : n);
+  };
+
   useEffect(() => {
     calculateCompoundInterest();
   }, [principal, monthlyContribution, rate, years]);
 
   const calculateCompoundInterest = () => {
-    const r = rate / 100;
-    const n = 12; // Compuesto mensualmente
-    const t = years;
-    const P = parseFloat(principal) || 0;
-    const PMT = parseFloat(monthlyContribution) || 0;
+    const r = Number(rate) / 100;
+    const n = 12;
+    const t = Number(years);
+    const P = Number(principal) || 0;
+    const PMT = Number(monthlyContribution) || 0;
 
-    let data = [];
-    
+    const data = [];
     for (let year = 0; year <= t; year++) {
       const months = year * 12;
-      
-      const futureValue = P * Math.pow(1 + r/n, n * year) + 
-                         PMT * ((Math.pow(1 + r/n, n * year) - 1) / (r/n));
-      
-      const yearlyContributions = P + (PMT * months);
+      const futureValue =
+        P * Math.pow(1 + r / n, n * year) +
+        PMT * ((Math.pow(1 + r / n, n * year) - 1) / (r / n));
+      const yearlyContributions = P + PMT * months;
       const interest = futureValue - yearlyContributions;
 
       data.push({
-        year: year,
+        year,
         total: Math.round(futureValue),
         contributions: Math.round(yearlyContributions),
-        interest: Math.round(interest)
+        interest: Math.round(interest),
       });
-
-      if (year === t) {
-        setResult({
-          finalAmount: Math.round(futureValue),
-          totalContributions: Math.round(yearlyContributions),
-          totalInterest: Math.round(interest)
-        });
-      }
     }
 
+    const last = data[data.length - 1];
+    setResult({
+      finalAmount: last.total,
+      totalContributions: last.contributions,
+      totalInterest: last.interest,
+    });
     setChartData(data);
   };
 
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('es-ES', {
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(value);
-  };
 
   return (
     <section id="calculator" className="py-20 px-4 bg-gradient-to-b from-slate-900 to-slate-800">
@@ -91,7 +93,7 @@ const Calculator = () => {
           >
             <Card className="p-8 bg-white/5 backdrop-blur-sm border-white/10">
               <h3 className="text-2xl font-bold text-white mb-6">Parámetros de Inversión</h3>
-              
+
               <div className="space-y-6">
                 <div>
                   <Label htmlFor="principal" className="text-white flex items-center gap-2 mb-2">
@@ -102,10 +104,12 @@ const Calculator = () => {
                     id="principal"
                     type="number"
                     value={principal}
-                    onChange={(e) => setPrincipal(e.target.value)}
+                    onChange={handleNumber(setPrincipal)}
                     className="bg-white/10 border-white/20 text-white text-lg"
                   />
-                  <span className="text-sm text-emerald-300 mt-1 block">{formatCurrency(principal)}</span>
+                  <span className="text-sm text-emerald-300 mt-1 block">
+                    {formatCurrency(principal)}
+                  </span>
                 </div>
 
                 <div>
@@ -117,10 +121,12 @@ const Calculator = () => {
                     id="monthly"
                     type="number"
                     value={monthlyContribution}
-                    onChange={(e) => setMonthlyContribution(e.target.value)}
+                    onChange={handleNumber(setMonthlyContribution)}
                     className="bg-white/10 border-white/20 text-white text-lg"
                   />
-                  <span className="text-sm text-cyan-300 mt-1 block">{formatCurrency(monthlyContribution)}/mes</span>
+                  <span className="text-sm text-cyan-300 mt-1 block">
+                    {formatCurrency(monthlyContribution)}/mes
+                  </span>
                 </div>
 
                 <div>
@@ -133,7 +139,7 @@ const Calculator = () => {
                     type="number"
                     step="0.1"
                     value={rate}
-                    onChange={(e) => setRate(e.target.value)}
+                    onChange={handleNumber(setRate)}
                     className="bg-white/10 border-white/20 text-white text-lg"
                   />
                   <span className="text-sm text-yellow-300 mt-1 block">{rate}% anual</span>
@@ -148,7 +154,7 @@ const Calculator = () => {
                     id="years"
                     type="number"
                     value={years}
-                    onChange={(e) => setYears(e.target.value)}
+                    onChange={handleNumber(setYears)}
                     className="bg-white/10 border-white/20 text-white text-lg"
                   />
                   <span className="text-sm text-purple-300 mt-1 block">{years} años</span>
@@ -167,14 +173,16 @@ const Calculator = () => {
             {result && (
               <Card className="p-8 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 backdrop-blur-sm border-emerald-400/30">
                 <h3 className="text-2xl font-bold text-white mb-6">Resultados Proyectados</h3>
-                
+
                 <div className="space-y-4">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20"
                   >
                     <div className="text-sm text-emerald-300 mb-1">Valor Final</div>
-                    <div className="text-3xl font-bold text-white">{formatCurrency(result.finalAmount)}</div>
+                    <div className="text-3xl font-bold text-white">
+                      {formatCurrency(result.finalAmount)}
+                    </div>
                   </motion.div>
 
                   <motion.div
@@ -182,7 +190,9 @@ const Calculator = () => {
                     className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20"
                   >
                     <div className="text-sm text-cyan-300 mb-1">Total Aportado</div>
-                    <div className="text-2xl font-bold text-white">{formatCurrency(result.totalContributions)}</div>
+                    <div className="text-2xl font-bold text-white">
+                      {formatCurrency(result.totalContributions)}
+                    </div>
                   </motion.div>
 
                   <motion.div
@@ -190,7 +200,9 @@ const Calculator = () => {
                     className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20"
                   >
                     <div className="text-sm text-yellow-300 mb-1">Intereses Ganados</div>
-                    <div className="text-2xl font-bold text-white">{formatCurrency(result.totalInterest)}</div>
+                    <div className="text-2xl font-bold text-white">
+                      {formatCurrency(result.totalInterest)}
+                    </div>
                   </motion.div>
 
                   <div className="bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 p-4 rounded-lg border border-emerald-400/30 mt-4">
@@ -209,23 +221,23 @@ const Calculator = () => {
                 <AreaChart data={chartData}>
                   <defs>
                     <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
                     </linearGradient>
                     <linearGradient id="colorContributions" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.1} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
                   <XAxis dataKey="year" stroke="#ffffff60" />
-                  <YAxis stroke="#ffffff60" tickFormatter={(value) => `${(value/1000).toFixed(0)}k`} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1e293b', 
+                  <YAxis stroke="#ffffff60" tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1e293b',
                       border: '1px solid #ffffff20',
                       borderRadius: '8px',
-                      color: '#fff'
+                      color: '#fff',
                     }}
                     formatter={(value) => formatCurrency(value)}
                   />
