@@ -78,7 +78,7 @@ const Footer = () => {
                      animate-fade-in-out flex items-center gap-2"
         >
           <span className="text-lg">⚠️</span>
-          <span>No se pudo abrir el enlace en este momento, espacio en construccion</span>
+          <span>No se pudo abrir el enlace en este momento, sitio en construccion</span>
         </div>
       )}
 
