@@ -5,7 +5,7 @@ import { Mail, MessageSquare } from "lucide-react";
 const Contact = () => {
   const [showError, setShowError] = useState(false);
 
-  // Oculta el mensaje después de 5 s
+  // Oculta el mensaje tras 5 segundos
   useEffect(() => {
     if (showError) {
       const timer = setTimeout(() => setShowError(false), 5000);
@@ -13,10 +13,13 @@ const Contact = () => {
     }
   }, [showError]);
 
-  // Manejador del clic en el enlace externo
   const handleExternalClick = (e) => {
     e.preventDefault();
     setShowError(true);
+  };
+
+  const handleGoHome = () => {
+    window.location.href = "/#/";
   };
 
   return (
@@ -60,7 +63,7 @@ const Contact = () => {
         </Card>
       </div>
 
-      {/* Mensaje sutil de error */}
+      {/* Mensaje de error */}
       {showError && (
         <div
           className="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-red-500/10 border border-red-400/30 
@@ -72,7 +75,17 @@ const Contact = () => {
         </div>
       )}
 
-      {/* Animación de entrada/salida */}
+      {/* Botón flotante para volver */}
+      <button
+        onClick={handleGoHome}
+        className="fixed bottom-6 left-6 bg-white/10 text-white px-4 py-2 rounded-full
+                   border border-white/20 backdrop-blur-sm hover:bg-emerald-500/20
+                   transition-all duration-300 text-sm font-medium shadow-md"
+      >
+        🏠 Volver al inicio
+      </button>
+
+      {/* Animación fade */}
       <style>
         {`
           @keyframes fadeInOut {

@@ -2,8 +2,12 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 
 const About = () => {
+  const handleGoHome = () => {
+    window.location.href = "/#/"; // vuelve a la home
+  };
+
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+    <section className="py-20 px-4 bg-gradient-to-b from-slate-900 to-slate-800 text-white relative">
       <div className="max-w-4xl mx-auto">
         <Card className="p-10 bg-white/5 border-white/10 backdrop-blur-sm">
           <h1 className="text-4xl font-bold mb-6 text-emerald-400">Quiénes Somos</h1>
@@ -24,6 +28,16 @@ const About = () => {
           </p>
         </Card>
       </div>
+
+      {/* Botón flotante para volver al inicio */}
+      <button
+        onClick={handleGoHome}
+        className="fixed bottom-6 left-6 bg-white/10 text-white px-4 py-2 rounded-full
+                   border border-white/20 backdrop-blur-sm hover:bg-emerald-500/20
+                   transition-all duration-300 text-sm font-medium shadow-md"
+      >
+        🏠 Volver al inicio
+      </button>
     </section>
   );
 };
