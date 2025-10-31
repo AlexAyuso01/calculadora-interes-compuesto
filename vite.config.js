@@ -2,33 +2,49 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath, URL } from "node:url";
 import { copyFileSync, existsSync } from "fs";
+import path from "path";
 
 export default defineConfig({
   plugins: [
     react(),
     {
-      // 👇 Plugin personalizado para copiar ads.txt al finalizar el build
-      name: "copy-ads-txt",
+      // 🧩 Plugin: copiar archivos estáticos extra tras el build
+      name: "copy-static-files",
       closeBundle() {
-        const source = "ads.txt";
-        const destination = "dist/ads.txt";
-        try {
-          if (existsSync(source)) {
-            copyFileSync(source, destination);
-            console.log("✅ ads.txt copiado correctamente a dist/");
+        const filesToCopy = ["404.html", "ads.txt"];
+
+        filesToCopy.forEach((file) => {
+          const src = path.resolve(file);
+          const dest = path.resolve("dist", file);
+
+          if (existsSync(src)) {
+            try {
+              copyFileSync(src, dest);
+              console.log(`✅ ${file} copiado correctamente a dist/`);
+            } catch (err) {
+              console.error(`⚠️ Error al copiar ${file}:`, err);
+            }
           } else {
-            console.warn("⚠️ No se encontró ads.txt en la raíz del proyecto");
+            console.warn(`⚠️ No se encontró el archivo ${file} en la raíz del proyecto.`);
           }
-        } catch (err) {
-          console.error("❌ Error al copiar ads.txt:", err);
-        }
+        });
       },
     },
   ],
-  base: "/", // usa "/" si vas a dominio propio
+
+  // 🌍 Base URL
+  // Usa "/" si tu dominio es calculadorainteres.es o tienes CNAME personalizado
+  // Usa "/nombre-repo/" si publicas como usuario.github.io/nombre-repo
+  base: "/",
+
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
+  },
+
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
   },
 });
