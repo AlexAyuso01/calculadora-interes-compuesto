@@ -5,7 +5,7 @@ import { Mail, MessageSquare } from "lucide-react";
 const Contact = () => {
   const [showError, setShowError] = useState(false);
 
-  // Oculta el mensaje tras 5 segundos
+  // Oculta el mensaje tras 5 s
   useEffect(() => {
     if (showError) {
       const timer = setTimeout(() => setShowError(false), 5000);
@@ -71,23 +71,32 @@ const Contact = () => {
                      animate-fade-in-out flex items-center gap-2"
         >
           <span className="text-lg">⚠️</span>
-          <span>No se pudo abrir el enlace en este momento</span>
+          <span>No se pudo abrir el enlace en este momento, sitio en construccion</span>
         </div>
       )}
 
-      {/* Botón flotante para volver */}
+      {/* Botón flotante arriba a la izquierda con animación */}
       <button
         onClick={handleGoHome}
-        className="fixed bottom-6 left-6 bg-white/10 text-white px-4 py-2 rounded-full
+        className="fixed top-6 left-6 bg-white/10 text-white px-4 py-2 rounded-full
                    border border-white/20 backdrop-blur-sm hover:bg-emerald-500/20
-                   transition-all duration-300 text-sm font-medium shadow-md"
+                   transition-all duration-300 text-sm font-medium shadow-md
+                   animate-slide-fade-in"
       >
         🏠 Volver al inicio
       </button>
 
-      {/* Animación fade */}
+      {/* Animaciones */}
       <style>
         {`
+          @keyframes slideFadeIn {
+            0% { opacity: 0; transform: translateX(-15px); }
+            100% { opacity: 1; transform: translateX(0); }
+          }
+          .animate-slide-fade-in {
+            animation: slideFadeIn 0.8s ease-out forwards;
+          }
+
           @keyframes fadeInOut {
             0% { opacity: 0; transform: translateY(10px); }
             10%, 90% { opacity: 1; transform: translateY(0); }
