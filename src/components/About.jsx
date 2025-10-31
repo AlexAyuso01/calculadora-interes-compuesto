@@ -1,9 +1,12 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom"; // 👈 Importa hook de navegación
 
 const About = () => {
+  const navigate = useNavigate(); // 👈 Inicializa el hook
+
   const handleGoHome = () => {
-    window.location.href = "/#/";
+    navigate("/"); // 👈 Navegación interna sin # ni recarga
   };
 
   return (

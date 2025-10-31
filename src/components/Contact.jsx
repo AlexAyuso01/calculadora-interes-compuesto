@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Mail, MessageSquare } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // 👈 navegación SPA
 
 const Contact = () => {
   const [showError, setShowError] = useState(false);
+  const navigate = useNavigate(); // 👈 hook de navegación
 
   // Oculta el mensaje tras 5 s
   useEffect(() => {
@@ -19,7 +21,7 @@ const Contact = () => {
   };
 
   const handleGoHome = () => {
-    window.location.href = "/#/";
+    navigate("/"); // 👈 sin # y sin recargar
   };
 
   return (

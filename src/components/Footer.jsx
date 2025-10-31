@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom'; // 👈 Importamos Link para navegación interna
 
 const Footer = () => {
-  const base = import.meta.env.BASE_URL || '/';
   const [showError, setShowError] = useState(false);
 
   // Ocultar el mensaje después de 5 segundos
@@ -33,18 +33,21 @@ const Footer = () => {
 
           {/* Enlaces */}
           <div className="flex items-center gap-6 text-sm">
-            <a
-              href={`${base}#/about`}
+            {/* Usamos <Link> para navegación interna sin recarga */}
+            <Link
+              to="/about"
               className="text-slate-400 hover:text-white transition-colors"
             >
               Quiénes somos
-            </a>
-            <a
-              href={`${base}#/contact`}
+            </Link>
+            <Link
+              to="/contact"
               className="text-slate-400 hover:text-white transition-colors"
             >
               Contacto
-            </a>
+            </Link>
+
+            {/* Enlace externo controlado */}
             <a
               href="https://www.a2ewebsolutions.com"
               onClick={handleExternalClick}
@@ -78,7 +81,7 @@ const Footer = () => {
                      animate-fade-in-out flex items-center gap-2"
         >
           <span className="text-lg">⚠️</span>
-          <span>No se pudo abrir el enlace en este momento, sitio en construccion</span>
+          <span>No se pudo abrir el enlace en este momento, sitio en construcción</span>
         </div>
       )}
 
